@@ -1,0 +1,23 @@
+type Task @model
+  @key(fields: ["studentId", "status", "dueDate", "hash"])
+  @key(name: "ByStatus", fields: ["status", "dueDate"], queryField: "todoByStatus") {
+  studentId: ID!
+  status: Status!
+  hash: String!
+  dueDate: String!
+  name: String!
+  subject: String
+}
+enum Status {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  COMPLETED
+  ZZZ_GRADED
+}
+
+type Student @model
+{
+  id: ID!
+  name: String!
+}

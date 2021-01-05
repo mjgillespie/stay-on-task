@@ -2,7 +2,6 @@
   <div >
     
     <div id="app" class="container">
-<button  class="btn btn-primary" v-on:click="callApi">Call API</button>
       <div class="row">
         <div class="col col-2"><h3>Students</h3></div>
         <div class="col col-4">
@@ -32,6 +31,7 @@
         </div>
         </div>
          <div class="col col-10">
+             <a :href="'/print/' + selectedStudent" v-show="selectedStudent != null" class="btn btn-info" target="_blank">Print Todays Work</a>
            </div>
       </div>
       <div class="row" v-show="selectedStudent != null">
@@ -85,6 +85,7 @@
                   <button  v-show = "editIndex != task.hash" v-on:click="deleteTask(task, true)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Delete</span></button>
                   <button  v-show = "editIndex == task.hash" v-on:click="updateTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Save</span></button>
                   <button  v-show = "editIndex == task.hash" v-on:click="cancelTask(task)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Cancel</span></button>
+
                 </td>
               </tr>
               </tbody>

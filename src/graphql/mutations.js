@@ -13,6 +13,7 @@ export const createTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }
@@ -30,6 +31,7 @@ export const updateTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }
@@ -47,6 +49,7 @@ export const deleteTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }

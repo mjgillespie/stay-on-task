@@ -10,6 +10,7 @@ export const onCreateTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }
@@ -24,6 +25,7 @@ export const onUpdateTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }
@@ -38,6 +40,7 @@ export const onDeleteTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }

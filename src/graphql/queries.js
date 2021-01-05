@@ -20,6 +20,7 @@ export const getTask = /* GraphQL */ `
       dueDate
       name
       subject
+      notes
       createdAt
       updatedAt
     }
@@ -49,6 +50,7 @@ export const listTasks = /* GraphQL */ `
         dueDate
         name
         subject
+        notes
         createdAt
         updatedAt
       }
@@ -107,6 +109,7 @@ export const todoByStatus = /* GraphQL */ `
         dueDate
         name
         subject
+        notes
         createdAt
         updatedAt
       }

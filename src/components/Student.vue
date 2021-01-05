@@ -31,8 +31,10 @@
         </div>
         </div>
          <div class="col col-10">
-             <a :href="'/print/' + selectedStudent" v-show="selectedStudent != null" class="btn btn-info" target="_blank">Print Todays Work</a>
+          <div class="btn btn-info">
+            <router-link :to="{ path: '/print/' + selectedStudent}">Print Agenda</router-link>
            </div>
+         </div>
       </div>
       <div class="row" v-show="selectedStudent != null">
         <div class="col col-4">Task</div>

@@ -31,7 +31,7 @@
         </div>
         </div>
          <div class="col col-10">
-          <a class="btn btn-info" :href="'/?studentid=' + selectedStudent">Print Agenda</a>
+          <a class="btn btn-info" target="_blank" :href="'/?studentid=' + selectedStudent">Print Agenda</a>
         </div>
       </div>
       <div class="row" v-show="selectedStudent != null">

@@ -31,10 +31,8 @@
         </div>
         </div>
          <div class="col col-10">
-          <div class="btn btn-info">
-            <router-link :to="{ path: '/print/' + selectedStudent}">Print Agenda</router-link>
-           </div>
-         </div>
+          <a class="btn btn-info" :href="'/?studentid=' + selectedStudent">Print Agenda</a>
+        </div>
       </div>
       <div class="row" v-show="selectedStudent != null">
         <div class="col col-4">Task</div>
@@ -147,6 +145,10 @@ import { deleteTask } from '../graphql/mutations';
 export default {
   name: 'App',
   async created() {
+    if (this.$route.query.studentid) {
+      this.$router.push({'name': 'Print', params: { studentid: this.$route.query.studentid}});
+    }
+    
     this.getStudents();
   },
   data() {

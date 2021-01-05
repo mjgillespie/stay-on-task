@@ -2,3 +2,12 @@
 .btn-primary:active {
 
 }
+
+.tasktable {
+    padding: 10px;
+}
+
+.tasknotes {
+    padding: 10px;
+    bottom-padding: 30px;
+}

@@ -1,7 +1,7 @@
 <template>
   <div >
     
-    <div id="app" class="container">
+    <div id="app" class="container tasktable">
       <div class="row">
         <div class="col col-2"><h3>Students</h3></div>
         <div class="col col-4">
@@ -35,61 +35,64 @@
            </div>
       </div>
       <div class="row" v-show="selectedStudent != null">
-        <div class="col col-12">
-          <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">Task</th>
-                <th scope="col">Subject</th>
-                <th scope="col">Due Date</th>
-                <th scope="col">Status</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="task in TaskItems" v-bind:key="task.hash" v-bind:value="task.hash">
-                <td>
-                  <div v-show = "editIndex != task.hash">
-                    <label> {{task.name}} </label>
-                  </div>
-                    <input name="taskname" 
-                         v-show = "editIndex == task.hash" 
-                         v-model = "task.name" >
-                </td>
-                <td>
-                  <div v-show = "editIndex != task.hash">
-                    <label> {{task.subject}} </label>
-                  </div>
-                    <input name="tasksubject" 
-                         v-show = "editIndex == task.hash" 
-                         v-model = "task.subject" >
-                </td>
-                <td>
-                  <div v-show = "editIndex != task.hash">
-                    <label> {{task.dueDate}} </label>
-                  </div>
-                    <input name="taskDueDate" 
-                         v-show = "editIndex == task.hash" 
-                         v-model = "task.dueDate" >                  
-                </td>
-                <td>
-                  <div v-show = "editIndex != task.hash">
-                    <label> {{mapStatus(task.status)}} </label>
-                  </div>
-                  <select v-model="task.status"  v-show = "editIndex == task.hash" >
-                         <option v-for="item in statusValues" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</option>
-                   </select>
-                </td>
-                <td>
-                  <button  v-show = "editIndex != task.hash" v-on:click="editTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Edit</span></button>
-                  <button  v-show = "editIndex != task.hash" v-on:click="deleteTask(task, true)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Delete</span></button>
-                  <button  v-show = "editIndex == task.hash" v-on:click="updateTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Save</span></button>
-                  <button  v-show = "editIndex == task.hash" v-on:click="cancelTask(task)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Cancel</span></button>
+        <div class="col col-4">Task</div>
+        <div class="col col-2">Subject</div>
+        <div class="col col-1">Due Date</div>
+        <div class="col col-2">Status</div>
+        <div class="col col-1"></div>
+        <div class="col col-2"></div>
+      </div>
+      <div v-for="task in TaskItems" v-bind:key="task.hash" v-bind:value="task.hash">
+        <div class="row">
+          <div class="col col-4">
+            <label v-show = "editIndex != task.hash"> {{task.name}} </label>
+            <input name="taskname" 
+             v-show = "editIndex == task.hash" 
+             v-model = "task.name" >
+          </div>
+          <div class="col col-2">
+            <label v-show = "editIndex != task.hash"> {{task.subject}} </label>
+            <input name="tasksubject" 
+                           v-show = "editIndex == task.hash" 
+                           v-model = "task.subject" >
+          </div>
+          <div class="col col-1">
+            <label v-show = "editIndex != task.hash"> {{task.dueDate}} </label>
 
-                </td>
-              </tr>
-              </tbody>
-          </table>
+            <input name="taskDueDate" 
+                 v-show = "editIndex == task.hash" 
+                 v-model = "task.dueDate" >                  
+          </div>
+          <div class="col col-2"> 
+            <label v-show = "editIndex != task.hash"> {{mapStatus(task.status)}} </label>
+            <select v-model="task.status"  v-show = "editIndex == task.hash" >
+              <option v-for="item in statusValues" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</option>
+            </select>
+          </div>
+          <div class="col col-1" v-show = "editIndex != task.hash">
+             <button  v-show = "showNotes != task.hash" v-on:click="showNotes = task.hash" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Notes</span></button>
+             <button  v-show = "showNotes == task.hash" v-on:click="showNotes =''" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Close</span></button>
+          
+            
+          </div>
+          <div class="col col-2">
+              <button  v-show = "editIndex != task.hash" v-on:click="editTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Edit</span></button>
+              <button  v-show = "editIndex != task.hash" v-on:click="deleteTask(task, true)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Delete</span></button>
+              <button  v-show = "editIndex == task.hash" v-on:click="updateTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Save</span></button>
+              <button  v-show = "editIndex == task.hash" v-on:click="cancelTask(task)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Cancel</span></button>
+          </div>
+        </div>
+        <div class="row tasknotes" v-show = "editIndex != task.hash && showNotes == task.hash">
+              <div class="col col-11" >
+                {{ task.notes }}
+              </div>
+              <div class="col col-1"/>
+
+        </div>
+        <div class="row tasknotes" v-show = "editIndex == task.hash">
+              <div class="col col-11" >
+                 <textarea v-model="task.notes" style="width: 100%" placeholder="Task Notes"/>
+              </div>
         </div>
       </div>
     </div>
@@ -115,6 +118,13 @@
              <option v-for="item in statusValues" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</option>
          </select>
       </div>
+    </div>
+    <div class="row" v-show = "selectedStudent != null">
+      <div class="col col-1">
+        </div>
+      <div class="col col-8">
+          <textarea v-model="taskNotes" style="width: 100%" placeholder="Task Notes"/>
+        </div>
       <div class="col col-2">
          <button v-on:click="createTask" class="btn btn-primary">Create Task</button>
       </div>
@@ -145,6 +155,8 @@ export default {
       taskStatus: '',
       taskSubject: '',
       editIndex: '',
+      showNotes: '',
+      taskNotes: '',
       selectedStudent: null,
       Students: [],
       TaskItems: [],
@@ -237,7 +249,7 @@ export default {
       if (!task.name || !task.dueDate || !task.status) return;
 
       
-      this.deleteTask(this.origTask, false);
+      await this.deleteTask(this.origTask, false);
       await API.graphql({
         query: createTask,
         variables: {input: {
@@ -246,6 +258,7 @@ export default {
           status: task.status,
           subject: task.subject,
           dueDate: task.dueDate,
+          notes: task.notes,
           hash: task.hash}
         },
       });
@@ -284,7 +297,7 @@ export default {
       const { taskName , taskDueDate, taskStatus, taskSubject } = this;
       
       if (!taskName || !taskDueDate || !taskStatus) return;
-      const Task = {studentId: this.selectedStudent, name: taskName, dueDate: this.formatDate(taskDueDate), status: taskStatus, hash: this.makeid(16), subject: taskSubject };
+      const Task = {studentId: this.selectedStudent, name: taskName, dueDate: this.formatDate(taskDueDate), status: taskStatus, hash: this.makeid(16), subject: taskSubject, notes: this.taskNotes};
       
      
  
@@ -297,6 +310,7 @@ export default {
       this.taskDueDate = '';
       this.taskStatus = '';
       this.taskSubject = '';
+      this.taskNotes = '';
     },
     async createStudent() {
       const { name } = this;

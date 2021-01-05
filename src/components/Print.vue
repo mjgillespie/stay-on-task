@@ -7,21 +7,17 @@
         </div>
       </div>
       <div class="row">
-        <div class="col col-1">Subject</div>
-          <div class="col col-5"> Task </div>
-          <div class="col col-1"> Due Date </div>
+        <div class="col col-6">Subject/Task </div>
+          <div class="col col-4"> Due Date </div>
           <div class="col col-2"> Status </div>
-          <div class="col col-2"> Due in Days </div>
        </div>
 <hr/>
        <div v-for="subject in subjects" v-bind:key="subject.name"  class="row" >
           <div class="col col-2"> <h4> {{ subject.name }} </h4></div>
           <div v-for="task in subject.tasks" v-bind:key="task.hash"  class="row" >
-            <div class="col col-1"></div>
-            <div class="col col-5"> {{ task.name }} </div>
-            <div class="col col-1"> {{ task.dueDate }} </div>
+            <div class="col col-6"> {{ task.name }} </div>
+            <div class="col col-4"> {{ task.dueDate }} ({{ dateMapping(task.dueDate) }}) </div>
             <div class="col col-2"> {{ mapStatus(task.status) }} </div>
-            <div class="col col-2"> {{ dateMapping(task.dueDate) }} </div>
           </div>
           <div class="row" >&nbsp; <hr/></div>
         </div>
@@ -69,7 +65,7 @@ export default {
 
       var diff = (due - t)/ (1000 * 60 * 60 * 24);
 
-      return diff;
+      return diff + ' days';
     },
     mapStatus(status) {
       

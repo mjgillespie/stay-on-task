@@ -58,6 +58,47 @@ export const listTasks = /* GraphQL */ `
     }
   }
 `;
+export const getSubject = /* GraphQL */ `
+  query GetSubject($studentId: ID!, $hash: String!) {
+    getSubject(studentId: $studentId, hash: $hash) {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const listSubjects = /* GraphQL */ `
+  query ListSubjects(
+    $studentId: ID
+    $hash: ModelStringKeyConditionInput
+    $filter: ModelSubjectFilterInput
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listSubjects(
+      studentId: $studentId
+      hash: $hash
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        studentId
+        hash
+        name
+        daysOfWeek
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;
 export const getStudent = /* GraphQL */ `
   query GetStudent($id: ID!) {
     getStudent(id: $id) {

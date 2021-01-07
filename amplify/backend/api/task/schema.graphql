@@ -17,6 +17,14 @@ enum Status {
   ZZZ_GRADED
 }
 
+type Subject @model
+  @key(fields: ["studentId", "hash"]) {
+  studentId: ID!
+  hash: String!
+  name: String!
+  daysOfWeek: String
+}
+
 type Student @model
 {
   id: ID!

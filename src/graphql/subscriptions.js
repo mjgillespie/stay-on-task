@@ -46,6 +46,42 @@ export const onDeleteTask = /* GraphQL */ `
     }
   }
 `;
+export const onCreateSubject = /* GraphQL */ `
+  subscription OnCreateSubject {
+    onCreateSubject {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateSubject = /* GraphQL */ `
+  subscription OnUpdateSubject {
+    onUpdateSubject {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteSubject = /* GraphQL */ `
+  subscription OnDeleteSubject {
+    onDeleteSubject {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const onCreateStudent = /* GraphQL */ `
   subscription OnCreateStudent {
     onCreateStudent {

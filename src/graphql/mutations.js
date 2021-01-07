@@ -55,6 +55,51 @@ export const deleteTask = /* GraphQL */ `
     }
   }
 `;
+export const createSubject = /* GraphQL */ `
+  mutation CreateSubject(
+    $input: CreateSubjectInput!
+    $condition: ModelSubjectConditionInput
+  ) {
+    createSubject(input: $input, condition: $condition) {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateSubject = /* GraphQL */ `
+  mutation UpdateSubject(
+    $input: UpdateSubjectInput!
+    $condition: ModelSubjectConditionInput
+  ) {
+    updateSubject(input: $input, condition: $condition) {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteSubject = /* GraphQL */ `
+  mutation DeleteSubject(
+    $input: DeleteSubjectInput!
+    $condition: ModelSubjectConditionInput
+  ) {
+    deleteSubject(input: $input, condition: $condition) {
+      studentId
+      hash
+      name
+      daysOfWeek
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createStudent = /* GraphQL */ `
   mutation CreateStudent(
     $input: CreateStudentInput!

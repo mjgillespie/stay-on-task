@@ -151,12 +151,16 @@ import { deleteTask } from '../graphql/mutations';
 import { listSubjects } from '../graphql/queries';
 import Subject from '@/components/Subject.vue'
 import VueMarkdown from 'vue-markdown'
+import { Auth } from 'aws-amplify'
 
 
 export default {
   name: 'Student',
   async created() {
-    console.log(this.$route.query.studentid);
+    
+    var currentUser = await Auth.currentAuthenticatedUser();
+    console.log(currentUser);
+
     if (this.$route.query.studentid) {
       this.$router.push({'name': 'Print', params: { studentid: this.$route.query.studentid}});
     }

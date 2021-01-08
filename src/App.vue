@@ -1,7 +1,11 @@
 <template>
  
   <div id="app">
+    <amplify-authenticator>
+    <amplify-sign-out></amplify-sign-out>
     <router-view/>
+
+  </amplify-authenticator>
   </div>
  
 </template>

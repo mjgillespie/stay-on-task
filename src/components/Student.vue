@@ -1,8 +1,8 @@
 <template>
   <div >
     
-    <div id="app" class="container tasktable">
-      <div class="row">
+    <div id="app" class="container">
+      <div class="row tasktable">
         <div class="col col-2"><h3>Students</h3></div>
         <div class="col col-4">
           <select class="form-select mb-3" aria-label="Default Student" v-model="selectedStudent" v-on:change="changeStudent">
@@ -21,7 +21,7 @@
           <button  class="btn btn-primary" v-on:click="createStudent">Create Student</button>
         </div>
       </div>
-       <div class="row">
+       <div class="row tasktable">
         <div class="col col-2">
           <div class="form-check">
           <input class="form-check-input" type="checkbox" value=""  v-on:change="changeStudent" v-model="showGraded" id="flexCheckDefault">
@@ -34,7 +34,7 @@
           <a class="btn btn-info" target="_blank" :href="'/?studentid=' + selectedStudent">Print Agenda</a>
         </div>
       </div>
-      <div class="row" v-show="selectedStudent != null">
+      <div class="row tasktable" v-show="selectedStudent != null">
         <div class="col col-4">Task</div>
         <div class="col col-2">Subject</div>
         <div class="col col-1">Due Date</div>
@@ -43,29 +43,30 @@
         <div class="col col-2"></div>
       </div>
       <div v-for="task in TaskItems" v-bind:key="task.hash" v-bind:value="task.hash">
-        <div class="row">
+        <div class="row tasktable">
           <div class="col col-4">
             <label v-show = "editIndex != task.hash"> {{task.name}} </label>
-            <input name="taskname" 
+            <input class="taskfield" name="taskname" 
              v-show = "editIndex == task.hash" 
              v-model = "task.name" >
           </div>
           <div class="col col-2">
-            <label v-show = "editIndex != task.hash"> {{task.subject}} </label>
-            <input name="tasksubject" 
-                           v-show = "editIndex == task.hash" 
-                           v-model = "task.subject" >
+            <label v-show = "editIndex != task.hash"> {{resolveSubject(task.subject)}} </label>
+
+            <select class="taskfield" v-model="task.subject"  v-show = "editIndex == task.hash" >
+              <option v-for="subject in Subjects" v-bind:key="subject.hash" v-bind:value="subject.hash">{{ subject.name }}</option>
+            </select>
           </div>
           <div class="col col-1">
             <label v-show = "editIndex != task.hash"> {{task.dueDate}} </label>
 
-            <input name="taskDueDate" 
+            <input class="taskfield" name="taskDueDate" 
                  v-show = "editIndex == task.hash" 
                  v-model = "task.dueDate" >                  
           </div>
           <div class="col col-2"> 
             <label v-show = "editIndex != task.hash"> {{mapStatus(task.status)}} </label>
-            <select v-model="task.status"  v-show = "editIndex == task.hash" >
+            <select class="taskfield" v-model="task.status"  v-show = "editIndex == task.hash" >
               <option v-for="item in statusValues" v-bind:key="item.key" v-bind:value="item.key">{{ item.value }}</option>
             </select>
           </div>
@@ -83,7 +84,7 @@
           </div>
         </div>
         <div class="row tasknotes" v-show = "editIndex != task.hash && showNotes == task.hash">
-              <div class="col col-11" >
+              <div class="col col-11 tasknote" >
                 {{ task.notes }}
               </div>
               <div class="col col-1"/>
@@ -129,6 +130,7 @@
          <button v-on:click="createTask" class="btn btn-primary">Create Task</button>
       </div>
    </div>
+    <Subject :studentid="selectedStudent" v-show = "selectedStudent != null" v-on:add="changeStudent()"></Subject>
   </div>
 </template>
 
@@ -139,17 +141,23 @@ import { createTask } from '../graphql/mutations';
 import { listStudents } from '../graphql/queries';
 import { listTasks } from '../graphql/queries';
 import { deleteTask } from '../graphql/mutations';
+import { listSubjects } from '../graphql/queries';
+import Subject from '@/components/Subject.vue'
 
 
 
 export default {
-  name: 'App',
+  name: 'Student',
   async created() {
+    console.log(this.$route.query.studentid);
     if (this.$route.query.studentid) {
       this.$router.push({'name': 'Print', params: { studentid: this.$route.query.studentid}});
     }
     
     this.getStudents();
+  },
+  components: {
+    Subject: Subject
   },
   data() {
     return {
@@ -164,6 +172,7 @@ export default {
       selectedStudent: null,
       Students: [],
       TaskItems: [],
+      Subjects: [],
       origTask: {},
       showGraded: false,
       statusValues: [
@@ -175,6 +184,15 @@ export default {
     }
   },
   methods: {
+    resolveSubject(hash){
+      for (var i in this.Subjects) {
+        if (this.Subjects[i].hash == hash) {
+          return this.Subjects[i].name;
+        }
+      }
+      
+      return '';
+    },
     mapStatus(status) {
       
       for (var item in this.statusValues) {
@@ -294,6 +312,18 @@ export default {
       this.TaskItems.sort(function (first, second) {
         return Date.parse(first.dueDate ) -  Date.parse(second.dueDate ) 
 
+      }) 
+      const Subjects = await API.graphql({
+        query: listSubjects,
+        variables: {
+        'studentId':this.selectedStudent
+        }
+      });
+      this.Subjects = Subjects.data.listSubjects.items;
+      this.Subjects.sort(function (first, second) {
+        if (first < second) return -1;
+        if (first > second) return 1;
+        return 0;
       }) 
       
     },

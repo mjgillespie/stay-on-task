@@ -12,7 +12,7 @@
           <div class="col col-2"> Status </div>
        </div>
 <hr/>
-       <div v-for="subject in subjects" v-bind:key="subject.name"  class="row" >
+       <div v-for="subject in Subjects" v-bind:key="subject.name"  class="row" >
           <div class="col col-2"> <h4> {{ subject.name }} </h4></div>
           <div v-for="task in subject.tasks" v-bind:key="task.hash"  class="row" >
             <div class="col col-6"> {{ task.name }} </div>
@@ -30,13 +30,14 @@
 import { API } from 'aws-amplify';
 import { listTasks } from '../graphql/queries';
 import { getStudent } from '../graphql/queries';
-
+import { listSubjects } from '../graphql/queries';
 
 
 export default {
   name: 'App',
   async created() {
     console.log('created');
+    this.loadSubjects();
     this.loadTasks();
   },
   props: ['studentid'],
@@ -45,7 +46,7 @@ export default {
       TaskItems: {},
       studentInfo: {},
       todaysDate: "",
-      subjects: [],
+      Subjects: [],
       statusValues: [
           {'key': 'NOT_STARTED','value': 'Not Started'},
           {'key': 'IN_PROGRESS','value': 'In Progress'},
@@ -55,6 +56,15 @@ export default {
     }
   },
   methods: {
+    resolveSubject(hash){
+      for (var i in this.Subjects) {
+        if (this.Subjects[i].hash == hash) {
+          return this.Subjects[i].name;
+        }
+      }
+      
+      return '';
+    },
     dateMapping(dueDate) {
       var due = Date.parse(dueDate);
 
@@ -77,10 +87,27 @@ export default {
       
       return '';
     },
+    async loadSubjects() {
+      console.log('studentid', this.studentid);
+
+      const Subjects = await API.graphql({
+        query: listSubjects,
+        variables: {
+        'studentId':this.studentid
+        }
+      });
+      this.Subjects = Subjects.data.listSubjects.items;
+      this.Subjects.sort(function (first, second) {
+        if (first < second) return -1;
+        if (first > second) return 1;
+        return 0;
+      }) 
+    },
     async loadTasks() {
       
       this.todaysDate = new Date().toLocaleDateString();
       
+      console.log('studentid', this.studentid);
 
       const studentInfo = await API.graphql({
         query: getStudent,
@@ -118,26 +145,25 @@ export default {
           return Date.parse(first.dueDate ) -  Date.parse(second.dueDate ) ;
       }) 
 
-
-
-      var subjects = [];
-      var i=-1;
-
       console.log('this.TaskItems');
       
-      for (var taskIdx in this.TaskItems) {
+      for (var i in this.Subjects) {
+        var subject = this.Subjects[i];
+
+        var tasks = []
+
+        for (var taskIdx in this.TaskItems) {
           var task = this.TaskItems[taskIdx];
-          if (i == -1 || subjects[i].name != task.subject) {
-            console.log('task.subject');
-            console.log( task.subject);
-            subjects.push({"name": task.subject, "tasks": []});
-            i++;
+
+          if (subject.hash == task.subject) {
+
+            tasks.push(task)
           }
-          subjects[i].tasks.push(task)
+          
+        }
+
+        this.$set(this.Subjects[i], 'tasks', tasks);
       }
-
-      this.subjects = subjects; 
-
     }
   }
 }

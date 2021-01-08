@@ -3,11 +3,25 @@
 
 }
 
+.taskfield {
+    width: 100%;
+    font-size: 12px;
+}
 .tasktable {
-    padding: 10px;
+    padding: 5px;
 }
 
 .tasknotes {
-    padding: 10px;
-    bottom-padding: 30px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-top: 3px;
+    border-width: 1px;
+    border-color: LightGray;
+    font-size: 12px;
+}
+
+.tasknote {
+    border-style: solid;
+    border-width: 1px;
+    border-color: LightGray;
 }

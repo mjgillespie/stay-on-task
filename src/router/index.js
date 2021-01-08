@@ -7,15 +7,16 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Student',
-    component: Student
-  },
-  {
     path: '/print/:studentid',
+    
     name: 'Print',
     props: true,
     component: Print
+  },
+  {
+    path: '/',
+    name: 'Student',
+    component: Student
   },
   {
     path: '/about',

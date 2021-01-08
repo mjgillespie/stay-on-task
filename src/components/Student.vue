@@ -71,7 +71,12 @@
             </select>
           </div>
           <div class="col col-1" v-show = "editIndex != task.hash">
-             <button  v-show = "showNotes != task.hash" v-on:click="showNotes = task.hash" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Notes</span></button>
+             <button  v-show = "showNotes != task.hash" v-on:click="showNotes = task.hash" type="button" class="btn btn-white">
+              <span v-show = "task.notes == ''" class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Notes
+              </span>
+              <span v-show = "task.notes != ''" class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Notes*
+              </span>
+            </button>
              <button  v-show = "showNotes == task.hash" v-on:click="showNotes =''" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Close</span></button>
           
             
@@ -85,7 +90,7 @@
         </div>
         <div class="row tasknotes" v-show = "editIndex != task.hash && showNotes == task.hash">
               <div class="col col-11 tasknote" >
-                <vue-markdown>{{ task.notes }} </vue-markdown>
+                <vue-markdown :key="task.notes">{{ task.notes }} </vue-markdown>
               </div>
               <div class="col col-1"/>
 

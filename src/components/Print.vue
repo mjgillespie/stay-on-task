@@ -3,23 +3,24 @@
     
     <div id="app" class="container">
       <div class="row">
-        <div class="col col-12"><h3>Schedule for {{ studentInfo.name }} on {{ todaysDate }} </h3>
+        <div class="col col-12 print-title">Schedule for {{ studentInfo.name }} on {{ todaysDate }} 
         </div>
       </div>
       <div class="row">
-        <div class="col col-6">Subject/Task </div>
-          <div class="col col-4"> Due Date </div>
-          <div class="col col-2"> Status </div>
+        <div class="col col-6 print-header">Subject/Task </div>
+          <div class="col col-4 print-header"> Due Date </div>
+          <div class="col col-2 print-header"> Status </div>
        </div>
-<hr/>
-       <div v-for="subject in Subjects" v-bind:key="subject.name"  class="row" >
-          <div class="col col-2"> <h4> {{ subject.name }} </h4></div>
-          <div v-for="task in subject.tasks" v-bind:key="task.hash"  class="row" >
-            <div class="col col-6"> {{ task.name }} </div>
-            <div class="col col-4"> {{ task.dueDate }} ({{ dateMapping(task.dueDate) }}) </div>
-            <div class="col col-2"> {{ mapStatus(task.status) }} </div>
+       <div v-for="subject in Subjects" v-bind:key="subject.name"  class="row print-subject" >
+          <div class="col col-12 print-header">  {{ subject.name }} </div>
+          <div v-for="task in subject.tasks" v-bind:key="task.hash"  class="row taskrow" >
+            <div class="col col-6 print-field"> {{ task.name }} </div>
+            <div class="col col-4 print-field"> {{ task.dueDate }} ({{ dateMapping(task.dueDate) }}) </div>
+            <div class="col col-2 print-field"> {{ mapStatus(task.status) }} </div>
+            <div class="col col-1">&nbsp;</div>
+            <div class="col col-11 print-notes" v-show="task.notes != ''"> <vue-markdown>{{ task.notes }} </vue-markdown></div>
+
           </div>
-          <div class="row" >&nbsp; <hr/></div>
         </div>
       </div>
    </div>
@@ -31,10 +32,13 @@ import { API } from 'aws-amplify';
 import { listTasks } from '../graphql/queries';
 import { getStudent } from '../graphql/queries';
 import { listSubjects } from '../graphql/queries';
-
+import VueMarkdown from 'vue-markdown'
 
 export default {
   name: 'App',
+  components: {
+    VueMarkdown
+  },
   async created() {
     console.log('created');
     this.loadSubjects();
@@ -75,7 +79,7 @@ export default {
 
       var diff = (due - t)/ (1000 * 60 * 60 * 24);
 
-      return diff + ' days';
+      return Math.ceil(diff) + ' days';
     },
     mapStatus(status) {
       
@@ -98,11 +102,12 @@ export default {
       });
       this.Subjects = Subjects.data.listSubjects.items;
       this.Subjects.sort(function (first, second) {
-        if (first < second) return -1;
-        if (first > second) return 1;
+        if (first.name < second.name) return -1;
+        if (first.name > second.name) return 1;
         return 0;
       }) 
     },
+
     async loadTasks() {
       
       this.todaysDate = new Date().toLocaleDateString();

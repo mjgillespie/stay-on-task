@@ -85,7 +85,7 @@
         </div>
         <div class="row tasknotes" v-show = "editIndex != task.hash && showNotes == task.hash">
               <div class="col col-11 tasknote" >
-                {{ task.notes }}
+                <vue-markdown>{{ task.notes }} </vue-markdown>
               </div>
               <div class="col col-1"/>
 
@@ -109,7 +109,9 @@
           <input type="text" v-model="taskName" placeholder="Task Name"/>
         </div>
         <div class="col col-2">
-         <input type="text" v-model="taskSubject" placeholder="Task Subject"/>
+            <select class="taskfield" v-model="taskSubject"  >
+              <option v-for="subject in Subjects" v-bind:key="subject.hash" v-bind:value="subject.hash">{{ subject.name }}</option>
+            </select>
         </div>
        <div class="col col-2">
          <input type="text" v-model="taskDueDate" placeholder="Due date"/>
@@ -143,7 +145,7 @@ import { listTasks } from '../graphql/queries';
 import { deleteTask } from '../graphql/mutations';
 import { listSubjects } from '../graphql/queries';
 import Subject from '@/components/Subject.vue'
-
+import VueMarkdown from 'vue-markdown'
 
 
 export default {
@@ -157,7 +159,8 @@ export default {
     this.getStudents();
   },
   components: {
-    Subject: Subject
+    Subject: Subject,
+    VueMarkdown: VueMarkdown
   },
   data() {
     return {
@@ -321,8 +324,8 @@ export default {
       });
       this.Subjects = Subjects.data.listSubjects.items;
       this.Subjects.sort(function (first, second) {
-        if (first < second) return -1;
-        if (first > second) return 1;
+        if (first.name < second.name) return -1;
+        if (first.name > second.name) return 1;
         return 0;
       }) 
       

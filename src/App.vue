@@ -2,7 +2,7 @@
  
   <div id="app">
     <amplify-authenticator >
-      <div class="no-print"">
+      <div class="no-print">
     <amplify-sign-out ></amplify-sign-out>
       </div>
     <router-view/>

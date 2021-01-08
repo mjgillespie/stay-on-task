@@ -152,6 +152,9 @@ import { listSubjects } from '../graphql/queries';
 import Subject from '@/components/Subject.vue'
 import VueMarkdown from 'vue-markdown'
 import { Auth } from 'aws-amplify'
+import { getUser } from '../graphql/queries';
+import { createUser } from '../graphql/mutations';
+import { updateUser } from '../graphql/mutations';
 
 
 export default {
@@ -159,7 +162,8 @@ export default {
   async created() {
     
     var currentUser = await Auth.currentAuthenticatedUser();
-    console.log(currentUser);
+
+    this.$session.set('userInfo', await this.getUserInfo(currentUser.attributes.email));
 
     if (this.$route.query.studentid) {
       this.$router.push({'name': 'Print', params: { studentid: this.$route.query.studentid}});
@@ -196,6 +200,29 @@ export default {
     }
   },
   methods: {
+    async getUserInfo(email) {
+      var userInfo = await API.graphql({
+        query: getUser,
+        variables: {id: email},
+      });
+
+      userInfo = userInfo.data.getUser;
+
+      if (userInfo == null) {
+        userInfo = {
+          "id": email,
+          "role": "readonly",
+          "students": []
+        }
+        await API.graphql({
+          query: createUser,
+          variables: {
+            input: userInfo
+          }
+        });
+      }
+      return userInfo;
+    },
     resolveSubject(hash){
       for (var i in this.Subjects) {
         if (this.Subjects[i].hash == hash) {
@@ -223,7 +250,6 @@ export default {
       };
     
       var response = await API.get(apiName, path, myInit);
-      console.log('response', response)
       window.open(response.documentUrl, '_blank');
     },
     editTask(task) {
@@ -319,12 +345,6 @@ export default {
         variables: variables,
       });
 
-      this.TaskItems = TaskItems.data.listTasks.items;
-      
-      this.TaskItems.sort(function (first, second) {
-        return Date.parse(first.dueDate ) -  Date.parse(second.dueDate ) 
-
-      }) 
       const Subjects = await API.graphql({
         query: listSubjects,
         variables: {
@@ -336,7 +356,18 @@ export default {
         if (first.name < second.name) return -1;
         if (first.name > second.name) return 1;
         return 0;
-      }) 
+      });
+
+      this.TaskItems = TaskItems.data.listTasks.items;
+      
+      var me = this;
+
+      this.TaskItems.sort(function (first, second) { 
+        if (me.resolveSubject(first.subject) < me.resolveSubject(second.subject)) return -1;
+        if (me.resolveSubject(first.subject) > me.resolveSubject(second.subject)) return 1;
+        return Date.parse(first.dueDate ) -  Date.parse(second.dueDate ) 
+
+      });
       
     },
     async createTask() {
@@ -362,16 +393,52 @@ export default {
       const { name } = this;
       if (!name) return;
       const Student = { name };
-      this.Students = [...this.Students, Student];
-      await API.graphql({
+      
+      var newStudent = await API.graphql({
         query: createStudent,
         variables: {input: Student},
       });
+      newStudent = newStudent.data.createStudent;
+
+      console.log('newStudent', newStudent);
+
+      this.Students = [...this.Students, newStudent];
+      
+
+      var currentUser = this.$session.get('userInfo');
+      
+      currentUser.students.push(newStudent.id);
+
+      await API.graphql({
+        query: updateUser,
+        variables: {input: {
+            id: currentUser.id,
+            role: currentUser.role,
+            students: currentUser.students
+          }}
+      });
+      
+
+
       this.name = '';
     },
     async getStudents() {
+
+      var currentUser = this.$session.get('userInfo');
+
+      var students = [{id: {eq: 'XXX'}}];
+
+      for (var i=0; i < currentUser.students.length; i++){
+        students.push({id: {eq: currentUser.students[i]}});
+      }
+
       const Students = await API.graphql({
-        query: listStudents
+        query: listStudents,
+        variables: {
+          filter: {
+            'or': students
+          }
+        }
       });
       this.Students = Students.data.listStudents.items;
     },
@@ -387,7 +454,6 @@ export default {
     formatDate(date) {
       var d = new Date(Date.parse(date.replaceAll('-','/')));
       
-      console.log(d);
       
       var month = '' + (d.getMonth() + 1),
           day = '' + d.getDate(),

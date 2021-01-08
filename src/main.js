@@ -8,6 +8,8 @@ import aws_exports from './aws-exports';
 import router from './router'
 import 'bootstrap'
 import '@/scss/custom.scss'
+import VueSession from 'vue-session'
+
 
 Amplify.configure(aws_exports);
 
@@ -17,3 +19,7 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+
+Vue.use(VueSession)
+
+

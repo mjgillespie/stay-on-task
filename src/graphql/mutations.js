@@ -100,6 +100,48 @@ export const deleteSubject = /* GraphQL */ `
     }
   }
 `;
+export const createUser = /* GraphQL */ `
+  mutation CreateUser(
+    $input: CreateUserInput!
+    $condition: ModeluserConditionInput
+  ) {
+    createUser(input: $input, condition: $condition) {
+      id
+      role
+      students
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateUser = /* GraphQL */ `
+  mutation UpdateUser(
+    $input: UpdateUserInput!
+    $condition: ModeluserConditionInput
+  ) {
+    updateUser(input: $input, condition: $condition) {
+      id
+      role
+      students
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteUser = /* GraphQL */ `
+  mutation DeleteUser(
+    $input: DeleteUserInput!
+    $condition: ModeluserConditionInput
+  ) {
+    deleteUser(input: $input, condition: $condition) {
+      id
+      role
+      students
+      createdAt
+      updatedAt
+    }
+  }
+`;
 export const createStudent = /* GraphQL */ `
   mutation CreateStudent(
     $input: CreateStudentInput!

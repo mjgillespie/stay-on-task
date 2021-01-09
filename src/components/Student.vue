@@ -2,7 +2,7 @@
   <div >
     
     <div id="app" class="container">
-      <div class="row tasktable">
+      <div class="row tasktable" v-show="userInfo && userInfo.role == 'admin'">
         <div class="col col-2"><h3>Students</h3></div>
         <div class="col col-4">
           <select class="form-select mb-3" aria-label="Default Student" v-model="selectedStudent" v-on:change="changeStudent">
@@ -21,11 +21,11 @@
           <button  class="btn btn-primary" v-on:click="createStudent">Create Student</button>
         </div>
       </div>
-       <div class="row tasktable">
-        <div class="col col-2">
+       <div class="row tasktable"  >
+        <div class="col col-2" v-show = "selectedStudent != null && userInfo && userInfo.role == 'admin'">
           <div class="form-check">
           <input class="form-check-input" type="checkbox" value=""  v-on:change="changeStudent" v-model="showGraded" id="flexCheckDefault">
-          <label class="form-check-label" for="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault"  >
             Show Graded
           </label>
         </div>
@@ -45,23 +45,23 @@
       <div v-for="task in TaskItems" v-bind:key="task.hash" v-bind:value="task.hash">
         <div class="row tasktable">
           <div class="col col-4">
-            <label v-show = "editIndex != task.hash"> {{task.name}} </label>
+            <label v-show = "editIndex != task.hash || userInfo.role != 'admin'"> {{task.name}} </label>
             <input class="taskfield" name="taskname" 
-             v-show = "editIndex == task.hash" 
+             v-show = "editIndex == task.hash && userInfo.role == 'admin'"
              v-model = "task.name" >
           </div>
           <div class="col col-2">
-            <label v-show = "editIndex != task.hash"> {{resolveSubject(task.subject)}} </label>
+            <label v-show = "editIndex != task.hash || userInfo.role != 'admin'"> {{resolveSubject(task.subject)}} </label>
 
-            <select class="taskfield" v-model="task.subject"  v-show = "editIndex == task.hash" >
+            <select class="taskfield" v-model="task.subject"  v-show = "editIndex == task.hash && userInfo.role == 'admin'" >
               <option v-for="subject in Subjects" v-bind:key="subject.hash" v-bind:value="subject.hash">{{ subject.name }}</option>
             </select>
           </div>
           <div class="col col-1">
-            <label v-show = "editIndex != task.hash"> {{task.dueDate}} </label>
+            <label v-show = "editIndex != task.hash || userInfo.role != 'admin'"> {{task.dueDate}} </label>
 
             <input class="taskfield" name="taskDueDate" 
-                 v-show = "editIndex == task.hash" 
+                 v-show = "editIndex == task.hash && userInfo.role == 'admin'" 
                  v-model = "task.dueDate" >                  
           </div>
           <div class="col col-2"> 
@@ -83,21 +83,21 @@
           </div>
           <div class="col col-2">
               <button  v-show = "editIndex != task.hash" v-on:click="editTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Edit</span></button>
-              <button  v-show = "editIndex != task.hash" v-on:click="deleteTask(task, true)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Delete</span></button>
+              <button  v-show = "editIndex != task.hash && userInfo.role == 'admin'" v-on:click="deleteTask(task, true)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Delete</span></button>
               <button  v-show = "editIndex == task.hash" v-on:click="updateTask(task)" type="button" class="btn btn-primary"><span class="glyphicon glyphicon glyphicon-pencil" aria-hidden="true">Save</span></button>
-              <button  v-show = "editIndex == task.hash" v-on:click="cancelTask(task)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Cancel</span></button>
+              <button  v-show = "editIndex == task.hash " v-on:click="cancelTask(task)" type="button" class="btn btn-white"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true">Cancel</span></button>
           </div>
         </div>
-        <div class="row tasknotes" v-show = "editIndex != task.hash && showNotes == task.hash">
+        <div class="row tasknotes" v-show = "(editIndex != task.hash || userInfo.role != 'admin') && showNotes == task.hash">
               <div class="col col-11 tasknote" >
                 <vue-markdown :key="task.notes">{{ task.notes }} </vue-markdown>
               </div>
               <div class="col col-1"/>
 
         </div>
-        <div class="row tasknotes" v-show = "editIndex == task.hash">
+        <div class="row tasknotes" v-show = "editIndex == task.hash && userInfo.role == 'admin'">
               <div class="col col-11" >
-                 <textarea v-model="task.notes" style="width: 100%" placeholder="Task Notes"/>
+                 <textarea v-model="task.notes" rows="10" style="width: 100%; height: auto;overflow-y: scroll;" placeholder="Task Notes"/>
               </div>
         </div>
       </div>
@@ -107,7 +107,7 @@
     
     
    
-    <div class="row" v-show = "selectedStudent != null">
+    <div class="row" v-show = "selectedStudent != null && userInfo && userInfo.role == 'admin'">
       <div class="col col-1">
         </div>
         <div class="col col-2">
@@ -127,7 +127,7 @@
          </select>
       </div>
     </div>
-    <div class="row" v-show = "selectedStudent != null">
+    <div class="row" v-show = "selectedStudent != null && userInfo && userInfo.role == 'admin'">
       <div class="col col-1">
         </div>
       <div class="col col-8">
@@ -137,7 +137,7 @@
          <button v-on:click="createTask" class="btn btn-primary">Create Task</button>
       </div>
    </div>
-    <Subject :studentid="selectedStudent" v-show = "selectedStudent != null" v-on:add="changeStudent()"></Subject>
+    <Subject :studentid="selectedStudent" v-show = "selectedStudent != null && userInfo && userInfo.role == 'admin'" v-on:add="changeStudent()"></Subject>
   </div>
 </template>
 
@@ -163,7 +163,10 @@ export default {
     
     var currentUser = await Auth.currentAuthenticatedUser();
 
-    this.$session.set('userInfo', await this.getUserInfo(currentUser.attributes.email));
+    this.userInfo = await this.getUserInfo(currentUser.attributes.email);
+    this.$session.set('userInfo', this.userInfo);
+
+
 
     if (this.$route.query.studentid) {
       this.$router.push({'name': 'Print', params: { studentid: this.$route.query.studentid}});
@@ -178,6 +181,7 @@ export default {
   data() {
     return {
       name: '',
+      userInfo: null,
       taskName: '',
       taskDueDate: '',
       taskStatus: '',
@@ -195,8 +199,7 @@ export default {
           {'key': 'NOT_STARTED','value': 'Not Started'},
           {'key': 'IN_PROGRESS','value': 'In Progress'},
           {'key': 'SUBMITTED','value': 'Submitted'},
-          {'key': 'COMPLETED','value': 'Completed'},
-          {'key': 'ZZZ_GRADED','value': 'Graded'}]
+          {'key': 'COMPLETED','value': 'Completed'}]
     }
   },
   methods: {
@@ -207,6 +210,10 @@ export default {
       });
 
       userInfo = userInfo.data.getUser;
+
+      if (userInfo.role == 'admin') {
+        this.statusValues.push({'key': 'ZZZ_GRADED','value': 'Graded'})
+      }
 
       if (userInfo == null) {
         userInfo = {
@@ -441,6 +448,13 @@ export default {
         }
       });
       this.Students = Students.data.listStudents.items;
+
+      if (this.Students.length >= 1) {
+        this.selectedStudent = this.Students[0].id;
+        this.changeStudent() 
+      }
+
+      console.log('this.selectedStudent', this.selectedStudent)
     },
     makeid(length) {
        var result           = '';

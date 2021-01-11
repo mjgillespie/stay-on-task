@@ -55,7 +55,7 @@ export default {
           {'key': 'NOT_STARTED','value': 'Not Started'},
           {'key': 'IN_PROGRESS','value': 'In Progress'},
           {'key': 'SUBMITTED','value': 'Submitted'},
-          {'key': 'COMPLETED','value': 'Completed'},
+          {'key': 'COMPLETED','value': 'Verified'},
           {'key': 'ZZZ_GRADED','value': 'Graded'}]
     }
   },
@@ -133,7 +133,9 @@ export default {
             'studentId':this.studentid,
             'filter': {
               'status': {
-                'ne': 'ZZZ_GRADED'
+                'and': [ 
+                  'ne': 'COMPLETED',
+                  'ne': 'ZZZ_GRADED'
               }
           }
         }

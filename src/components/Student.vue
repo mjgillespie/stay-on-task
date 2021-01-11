@@ -198,8 +198,7 @@ export default {
       statusValues: [
           {'key': 'NOT_STARTED','value': 'Not Started'},
           {'key': 'IN_PROGRESS','value': 'In Progress'},
-          {'key': 'SUBMITTED','value': 'Submitted'},
-          {'key': 'COMPLETED','value': 'Completed'}]
+          {'key': 'SUBMITTED','value': 'Submitted'}]
     }
   },
   methods: {
@@ -212,6 +211,7 @@ export default {
       userInfo = userInfo.data.getUser;
 
       if (userInfo.role == 'admin') {
+        this.statusValues.push({'key': 'COMPLETED','value': 'Verified'})
         this.statusValues.push({'key': 'ZZZ_GRADED','value': 'Graded'})
       }
 

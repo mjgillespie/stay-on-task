@@ -132,11 +132,11 @@ export default {
         variables: {
             'studentId':this.studentid,
             'filter': {
-              'status': {
-                'and': [ 
-                  'ne': 'COMPLETED',
-                  'ne': 'ZZZ_GRADED'
-              }
+              'or': [
+              {'status': {'eq': 'NOT_STARTED'}},
+              {'status': {'eq': 'IN_PROGRESS'}},
+              {'status': {'eq': 'SUBMITTED'}}
+            ]
           }
         }
       });

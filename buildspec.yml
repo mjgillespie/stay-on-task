@@ -1,0 +1,19 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 12
+    commands:
+      - echo Installing Amplify
+      - npm install -g @aws-amplify/cli
+      - echo Install Complete
+  pre_build:
+    commands:
+      - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+      - amplify publish
+  post_build:
+    commands:
+      - echo Build completed on `date`
